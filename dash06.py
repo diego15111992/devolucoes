@@ -4,7 +4,6 @@ import plotly.express as px
 import locale
 
 # ================= LOGIN =================
-# ================= LOGIN =================
 usuarios = {
     "Diego15": "Diego@dias15",
     "Admim": "123258"
@@ -144,7 +143,7 @@ with col1:
 
 with col2:
     st.metric("VALOR TOTAL", f"{valor_formatado}")
-    st.subheader("📋 PERCENTUAL POR OCORRÊNCIAS")
+    st.subheader("📋 PERCENTUAL P/ OCORRÊNCIAS")
     st.dataframe(top_5_motivos, use_container_width=True)
 
 # 🔁 Função para gerar rankings
@@ -185,4 +184,4 @@ for i in range(0, len(rankings), 2):
         col.subheader(titulo)
         col.dataframe(df_rnk, use_container_width=True)
 
-st.markdown("Auditoria de Logista Nacional - @Diego Dias.")
+st.markdown("Auditoria de Logística Nacional - @Diego Dias.")
