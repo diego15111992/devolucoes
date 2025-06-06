@@ -121,26 +121,43 @@ top_5_motivos.index = range(1, len(top_5_motivos) + 1)
 
 # 📊 Gráfico de devoluções por FILIAL
 df_mes = df.copy()
-df_mes["MÊS"] = df_mes["DATA"].dt.strftime("%b/%Y")
-grafico_pizza = df_mes.groupby("FILIAL")["VALOR"].sum().reset_index()
+
+# Cria coluna auxiliar para ordenação cronológica dos meses
+df_mes["MÊS_REAL"] = df_mes["DATA"].dt.to_period("M").dt.to_timestamp()
+df_mes["MÊS"] = df_mes["MÊS_REAL"].dt.strftime("%b/%Y")
+
+# Agrupa por MÊS e FILIAL
+grafico_barra = df_mes.groupby(["MÊS_REAL", "MÊS", "FILIAL"])["VALOR"].sum().reset_index()
+
+# Ordena do mês mais recente para o mais antigo
+grafico_barra = grafico_barra.sort_values("MÊS_REAL", ascending=True)
 
 st.subheader("📊 ANÁLISE POR UNIDADE LOGÍSTICA")
-fig_pizza = px.pie(
-    grafico_pizza,
-    names="FILIAL",
-    values="VALOR",
-    title="",
-    color_discrete_sequence=px.colors.qualitative.Set3
+
+fig_bar = px.bar(
+    grafico_barra,
+    x="MÊS",
+    y="VALOR",
+    color="FILIAL",
+    barmode="group",
+    color_discrete_sequence=px.colors.qualitative.Set3,
+    labels={"VALOR": "", "MÊS": "", "FILIAL": "Filial"},
+    title="Devoluções por Filial ao longo dos meses"
 )
-fig_pizza.update_traces(
-    textinfo='percent+label',
-    textfont=dict(family="Arial black", size=10, color="black")
+
+# Atualiza layout sem os títulos dos eixos
+fig_bar.update_layout(
+    xaxis_title=None,
+    yaxis_title=None,
+    xaxis_tickangle=-45,
+    xaxis=dict(categoryorder='array', categoryarray=list(grafico_barra["MÊS"])),
+    legend_title="Filial"
 )
 
 col1, col2 = st.columns([2, 1])
 with col1:
-    st.plotly_chart(fig_pizza, use_container_width=True)
-
+    st.plotly_chart(fig_bar, use_container_width=True)
+    
 with col2:
     st.metric("VALOR TOTAL", f"{valor_formatado}")
     st.subheader("📋 PERCENTUAL P/ OCORRÊNCIAS")
