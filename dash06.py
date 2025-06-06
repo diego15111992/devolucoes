@@ -201,4 +201,4 @@ for i in range(0, len(rankings), 2):
         col.subheader(titulo)
         col.dataframe(df_rnk, use_container_width=True)
 
-st.markdown("Auditoria de Logística Nacional - @Diego Dias.")
+st.markdown("Auditoria de Logística Nacional - @Diego_Dias_15.")
